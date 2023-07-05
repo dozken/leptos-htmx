@@ -1,21 +1,53 @@
-use actix_web::{get, web, App, HttpServer, HttpRequest, HttpResponse};
+use actix_web::{get, put, web, App, HttpRequest, HttpResponse, HttpServer};
 use leptos::ssr::*;
 use leptos::*;
+use leptos_start::app::*;
 
-async fn index(req: HttpRequest) -> HttpResponse {
-
-    let html = render_to_string(|cx| view! { cx,
-        <head>
-            <title>Leptos</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-        </head>
-        <body>
-            <h1>"Leptos"</h1>
-            <p>"Leptos is a Rust framework for building web apps."</p>
-        </body>
+#[put("/contact/1")]
+async fn contact(req: HttpRequest) -> HttpResponse {
+    println!("{:?}", req);
+    let html = render_to_string(|cx| {
+        view! { cx,
+            <Contact />
+        }
     });
-    println!("{:?}",html);
+    println!("{:?}", html);
+
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(html)
+}
+#[get("/contact/1/edit")]
+async fn contactEdit() -> HttpResponse {
+    let html = render_to_string(|cx| {
+        view! { cx,
+            <ContactEdit />
+        }
+    });
+    println!("{:?}", html);
+
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(html)
+}
+
+async fn index(_req: HttpRequest) -> HttpResponse {
+    let html = render_to_string(|cx| {
+        view! { cx,
+            <head>
+                <title>Leptos</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+            </head>
+            <body>
+                <h1>"Leptos"</h1>
+                <p>"Leptos is a Rust framework for building web apps."</p>
+                <Contact />
+            </body>
+        }
+    });
+    println!("{:?}", html);
+
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(html)
@@ -25,15 +57,16 @@ async fn index(req: HttpRequest) -> HttpResponse {
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
-//            .wrap(middleware::Logger::default())
-//          .service(web::resource("/index.html").to(|| async { "Hello world!" }))
+            //            .wrap(middleware::Logger::default())
+            //          .service(web::resource("/index.html").to(|| async { "Hello world!" }))
             .service(web::resource("/").to(index))
+            .service(contact)
+            .service(contactEdit)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
     .await
 }
-
 
 // #[cfg(feature = "ssr")]
 // #[actix_web::main]
