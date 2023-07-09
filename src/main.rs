@@ -3,28 +3,47 @@ use leptos::ssr::*;
 use leptos::*;
 use leptos_start::app::*;
 
-#[put("/contact/1")]
-async fn contact(req: HttpRequest) -> HttpResponse {
-    println!("{:?}", req);
+
+#[get("/contact/1")]
+async fn contact()-> HttpResponse {
+    let contactData = ContactData {
+        firstName: "John".to_string(),
+        lastName: "Doe".to_string(),
+        email: "doe@doe.do".to_string(),
+    };
+
     let html = render_to_string(|cx| {
         view! { cx,
-            <Contact />
+            <Contact contact=contactData />
         }
     });
-    println!("{:?}", html);
 
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(html)
 }
-#[get("/contact/1/edit")]
-async fn contactEdit() -> HttpResponse {
+
+#[put("/contact/1")]
+async fn contact_update(form: web::Form<ContactData>)-> HttpResponse {
+    let form = form.into_inner();
     let html = render_to_string(|cx| {
         view! { cx,
-            <ContactEdit />
+            <Contact contact=form />
         }
     });
-    println!("{:?}", html);
+
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(html)
+}
+
+#[get("/contact/1/edit")]
+async fn contact_edit() -> HttpResponse {
+    let html = render_to_string(|cx| {
+        view! { cx,
+            <ContactEdit/>
+        }
+    });
 
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
@@ -32,6 +51,12 @@ async fn contactEdit() -> HttpResponse {
 }
 
 async fn index(_req: HttpRequest) -> HttpResponse {
+    let contactData = ContactData {
+        firstName: "John".to_string(),
+        lastName: "Doe".to_string(),
+        email: "doe@doe.do".to_string(),
+    };
+
     let html = render_to_string(|cx| {
         view! { cx,
             <head>
@@ -42,11 +67,10 @@ async fn index(_req: HttpRequest) -> HttpResponse {
             <body>
                 <h1>"Leptos"</h1>
                 <p>"Leptos is a Rust framework for building web apps."</p>
-                <Contact />
+                <App />
             </body>
         }
     });
-    println!("{:?}", html);
 
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
@@ -61,7 +85,8 @@ async fn main() -> std::io::Result<()> {
             //          .service(web::resource("/index.html").to(|| async { "Hello world!" }))
             .service(web::resource("/").to(index))
             .service(contact)
-            .service(contactEdit)
+            .service(contact_edit)
+            .service(contact_update)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
