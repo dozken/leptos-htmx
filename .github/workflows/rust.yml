@@ -10,6 +10,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Renovate Bot GitHub Action
+      uses: renovatebot/github-action@v36.0.0
+      env:
+        RENOVATE_TOKEN: ${{ secrets.RENOVATE_TOKEN }}
 
     - name: Install Rust
       uses: actions-rs/toolchain@v1
