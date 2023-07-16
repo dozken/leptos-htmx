@@ -1,9 +1,25 @@
-# Leptos + </> htmx
+# Leptos-HTMX
 
-Implementing htmx examples using Rust.
-[Leptos](https://leptos.dev)
+Leptos-HTMX is a project that implements HTMX examples using the Rust language and the Leptos framework. 
 
-1. [click-to-edit](https://htmx.org/examples/click-to-edit)
+## Technologies Used
 
-## Run
-`cargo leptos watch`
+- [Rust](https://www.rust-lang.org/)
+- [Leptos](https://leptos.dev/)
+- [HTMX](https://htmx.org/)
+
+## Getting Started
+
+To get a local copy up and running, follow these steps:
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/dozken/leptos-htmx.git
+
+2. Navigate to the project directory:
+   ```sh   
+   cd leptos-htmx
+3. Run the project:
+   ```sh
+   cargo leptos watch
+   
